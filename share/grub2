@@ -192,14 +192,14 @@ function grub_remove_sealed_key {
 function grub_get_keyslots {
     local luks_dev=$1
 
-    fdectl-grub-tpm2 list --key-only ${luks_dev}
+    fdectl-grub-tpm2 list --key-only "${luks_dev}"
 }
 
 function grub_remove_keyslots {
     local luks_dev=$1
     local keyslots="$2"
 
-    grub_tpm2_slots=$(grub_get_keyslots ${luks_dev})
+    grub_tpm2_slots=$(grub_get_keyslots "${luks_dev}")
     if [ "$?" -ne 0 ]; then
         return 1
     fi
@@ -217,16 +217,16 @@ function grub_remove_keyslots {
 
     # Remove the keyslots
     for slot in ${keyslots}; do
-        cryptsetup luksKillSlot -q ${luks_dev} ${slot}
+        cryptsetup luksKillSlot -q "${luks_dev}" "${slot}"
     done
 
-    fdectl-grub-tpm2 clean ${luks_dev}
+    fdectl-grub-tpm2 clean "${luks_dev}"
 }
 
 function grub_wipe {
     local luks_dev=$1
 
-    grub_remove_keyslots ${luks_dev}
+    grub_remove_keyslots "${luks_dev}"
 }
 
 function grub_rsa_sizes {
