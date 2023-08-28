@@ -183,7 +183,7 @@ if [ ! -e "$SHAREDIR/commands/$command" ]; then
 fi
 
 
-if [ "$opt_bootloader" != "grub2" -a "$opt_bootloader" != "systemd-boot" ]; then
+if [ "$opt_bootloader" != "grub2" ] && [ "$opt_bootloader" != "systemd-boot" ]; then
     fde_bad_argument "Unsupported boot loader \"$opt_bootloader\""
 fi
 
