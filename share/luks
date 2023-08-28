@@ -62,7 +62,7 @@ function luks_dm_name_for_device {
 
     if [ "${dev%/*}" = "/dev/mapper" ]; then
 	name="${dev##*/}"
-	echo $name
+	echo "$name"
 	return 0
     fi
 
@@ -128,7 +128,7 @@ function luks_get_underlying_device {
 	dm_name=$(cat "/sys/block/$id/dm/name")
 	test "$dm_name" = "$luks_name" || continue
 
-	slaves=$(ls /sys/block/$id/slaves)
+	slaves=$(ls /sys/block/"$id"/slaves)
 	case "$slaves" in
 	*" "*)
 	    echo "Ambiguous number of slave devices for LUKS dm device">&2
@@ -176,8 +176,8 @@ function luks_write_password {
     filename=$(fde_make_tempfile "$1")
     shift
 
-    echo -n "$*" >$filename
-    echo $filename
+    echo -n "$*" >"$filename"
+    echo "$filename"
 }
 
 ##################################################################
@@ -186,16 +186,16 @@ function luks_write_password {
 function luks_drop_pass {
 
     local luks_dev=$1
-    old_pass="$2"
+    local old_pass="$2"
 
     display_infobox "Dropping old recovery password (${luks_dev})"
     old_keyfile=$(luks_write_password oldpass "${old_pass}")
-    if ! cryptsetup luksRemoveKey "${luks_dev}" ${old_keyfile}; then
+    if ! cryptsetup luksRemoveKey "${luks_dev}" "${old_keyfile}"; then
 	fde_trace "Warning: luksRemoveKey indicates failure"
 	return 1
     fi
 
-    rm -f ${old_keyfile}
+    rm -f "${old_keyfile}"
     return 0
 }
 
@@ -208,7 +208,7 @@ function luks_drop_key {
     local luks_keyfile="$2"
 
     display_infobox "Dropping old LUKS key (${luks_dev})"
-    if ! cryptsetup luksRemoveKey "${luks_dev}" ${luks_keyfile}; then
+    if ! cryptsetup luksRemoveKey "${luks_dev}" "${luks_keyfile}"; then
 	fde_trace "Warning: luksRemoveKey indicates failure"
 	return 1
     fi
@@ -278,11 +278,11 @@ function luks_change_password {
     old_keyfile=$(luks_write_password oldpass "${luks_old_password}")
     new_keyfile=$(luks_write_password newpass "${result_password}")
     if ! luks_set_password "${luks_dev}" "${old_keyfile}" "${new_keyfile}"; then
-	rm -f ${new_keyfile} ${old_keyfile}
+	rm -f "${new_keyfile}" "${old_keyfile}"
 	return 1
     fi
 
-    rm -f ${new_keyfile} ${old_keyfile}
+    rm -f "${new_keyfile}" "${old_keyfile}"
 }
 
 function luks_add_password {
@@ -303,12 +303,12 @@ function luks_add_password {
     display_infobox "Updating LUKS password (${luks_dev})"
 
     new_keyfile=$(luks_write_password newpass "${luks_new_password}")
-    if ! cryptsetup --key-file "${luks_keyfile}" luksAddKey --pbkdf "$FDE_LUKS_PBKDF" "${luks_dev}" ${new_keyfile}; then
+    if ! cryptsetup --key-file "${luks_keyfile}" luksAddKey --pbkdf "$FDE_LUKS_PBKDF" "${luks_dev}" "${new_keyfile}"; then
 	fde_trace "Warning: luksAddKey indicates failure"
 	return 1
     fi
 
-    rm -f ${new_keyfile}
+    rm -f "${new_keyfile}"
 }
 
 function luks_add_key {
@@ -329,14 +329,14 @@ function luks_add_key {
     # key that was random to begin with.
     luks_output=$(cryptsetup --verbose --key-file "${luks_keyfile}" luksAddKey \
 		  --pbkdf "$FDE_LUKS_PBKDF" --pbkdf-force-iterations 1000 \
-		  ${luks_dev} ${new_keyfile})
+		  "${luks_dev}" "${new_keyfile}")
     if test $? -ne 0; then
 	fde_trace "Warning: luksAddKey indicates failure"
         return 1
     fi
 
     luks_keyslot=$(sed -En 's/Key slot ([0-9]*) created./\1/p' <<< "${luks_output}")
-    fdectl-grub-tpm2 add --key-slot ${luks_keyslot} ${luks_dev}
+    fdectl-grub-tpm2 add --key-slot "${luks_keyslot}" "${luks_dev}"
 }
 
 function luks_generate_random_key {
@@ -351,9 +351,9 @@ function luks_add_random_key {
     local luks_keyfile="$2"
     local new_keyfile="$3"
 
-    luks_generate_random_key ${new_keyfile}
+    luks_generate_random_key "${new_keyfile}"
 
-    luks_add_key ${luks_dev} ${luks_keyfile} ${new_keyfile}
+    luks_add_key "${luks_dev}" "${luks_keyfile}" "${new_keyfile}"
 }
 
 function luks_set_key {
@@ -367,7 +367,7 @@ function luks_set_key {
     # key that was random to begin with.
     cryptsetup --key-file "${luks_keyfile}" luksChangeKey \
 		--pbkdf "$FDE_LUKS_PBKDF" --pbkdf-force-iterations 1000 \
-		$luks_dev $new_keyfile
+		"${luks_dev} "${new_keyfile}"
 }
 
 function luks_set_random_key {
@@ -375,13 +375,13 @@ function luks_set_random_key {
     local luks_keyfile="$2"
 
     new_keyfile=/dev/shm/new.keyfile
-    luks_generate_random_key ${new_keyfile}
+    luks_generate_random_key "${new_keyfile}"
 
-    luks_set_key ${luks_dev} ${luks_keyfile} ${new_keyfile}
+    luks_set_key "${luks_dev}" "${luks_keyfile}" "${new_keyfile}"
     ret=$?
 
-    cp $new_keyfile "${luks_keyfile}"
-    rm -f $new_keyfile
+    cp "${new_keyfile}" "${luks_keyfile}"
+    rm -f "${new_keyfile}"
 
     return $ret
 }
@@ -395,7 +395,7 @@ function luks_reencrypt {
     # we need to perform reencryption during installation, after dd'ing the image to
     # disk and prior to mounting it.
     {
-	cryptsetup reencrypt --key-file "$luks_keyfile" --progress-frequency 1 $luks_dev 2>&1|
+	cryptsetup reencrypt --key-file "$luks_keyfile" --progress-frequency 1 "$luks_dev" 2>&1|
 	    sed -u 's/.* \([0-9]*\)[0-9.]*%.*/\1/'
 	    echo 100
     } | display_gauge "Re-encrypting root file system on $luks_dev"
@@ -403,14 +403,14 @@ function luks_reencrypt {
 
 function luks_decrypt {
 
-    luks_dev="$1"
-    luks_keyfile="$2"
+    local luks_dev="$1"
+    local luks_keyfile="$2"
 
     # Online reencryption works with LUKS2 only. If we ever want to do FDE with luks1,
     # we need to perform reencryption during installation, after dd'ing the image to
     # disk and prior to mounting it.
     {
-	cryptsetup reencrypt --decrypt --key-file "$luks_keyfile" --progress-frequency 1 $luks_dev 2>&1|
+	cryptsetup reencrypt --decrypt --key-file "$luks_keyfile" --progress-frequency 1 "$luks_dev" 2>&1|
 	    sed -u 's/.* \([0-9]*\)[0-9.]*%.*/\1/'
 	    echo 100
     } | display_gauge "Decrypting LUKS device $luks_dev"
