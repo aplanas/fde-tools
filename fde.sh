@@ -187,7 +187,7 @@ if [ "$opt_bootloader" != "grub2" ] && [ "$opt_bootloader" != "systemd-boot" ]; 
     fde_bad_argument "Unsupported boot loader \"$opt_bootloader\""
 fi
 
-trap fde_clean_tempdir 0 1 2 11 15
+trap fde_clean_tempdir EXIT SIGHUP SIGINT SIGSEGV SIGTERM
 
 . "$SHAREDIR/luks"
 . "$SHAREDIR/uefi"
