@@ -18,7 +18,7 @@
 #   Written by Olaf Kirch <okir@suse.com>
 
 ##################################################################
-# Note: some of the functiions below expect the caller to provide
+# Note: some of the functions below expect the caller to provide
 # functions for user interaction:
 #
 # request_password MESSAGE
