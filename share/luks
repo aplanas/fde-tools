@@ -158,7 +158,7 @@ function __partlabel_to_dev {
 
 function partlabel_to_dev {
 
-    for iter in 1 2 3; do
+    for _ in 1 2 3; do
 	dev=$(__partlabel_to_dev "$@")
 	test -z "${dev}" || break
     done
