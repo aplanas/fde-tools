@@ -20,7 +20,7 @@
 
 shopt -s expand_aliases
 
-: ${SHAREDIR:=/usr/share/fde}
+: "${SHAREDIR:=/usr/share/fde}"
 
 version=__VERSION__
 
@@ -116,7 +116,7 @@ function fde_maybe_chroot {
 
 	# If a keyfile was given, we need to strip off the /mnt prefix
 	if [ -n "$keyfile" ]; then
-	    keyfile="${keyfile#$device}"
+	    keyfile="${keyfile#"$device"}"
 	    A+=("--keyfile" "$keyfile")
 	fi
         exec chroot "$device" fdectl "${A[@]}"
