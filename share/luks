@@ -146,7 +146,7 @@ function __partlabel_to_dev {
     local wanted="$1"
     lsblk -nPo NAME,PARTLABEL|while read _line; do
 	eval declare -- $_line
-	if [ "${PARTLABEL}" = "${wanted}" -a -n "${NAME}" ]; then
+	if [ "${PARTLABEL}" = "${wanted}" ] && [ -n "${NAME}" ]; then
 	    if ! [[ "${NAME}" =~ /dev/.* ]]; then
 		NAME="/dev/${NAME}"
 	    fi
