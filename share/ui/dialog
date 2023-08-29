@@ -29,8 +29,8 @@ function d_stolen_from_jeos {
 		case $retval in
 		  0)
 			# need || true as dialog doesn't write newlines
-			read result < $dialog_out || true
-			rm -f $dialog_out
+			read result < "$dialog_out" || true
+			rm -f "$dialog_out"
 			return 0
 			;;
 		  1)
@@ -48,7 +48,7 @@ function d_stolen_from_jeos {
 			fi
 			logger -p err -t jeos-firstboot "$result_error"
 			dialog --backtitle "$PRETTY_NAME" --msgbox $"Exiting due to error, please check the system log" 0 0
-			rm -f $dialog_out
+			rm -f "$dialog_out"
 			exit 2
 			;;
 		esac
