@@ -183,14 +183,14 @@ function tpm_test {
     key_size=$1
 
     secret=$(fde_make_tempfile secret)
-    dd if=/dev/zero of=$secret bs=$key_size count=1 status=none >&2
+    dd if=/dev/zero of="$secret" bs="$key_size" count=1 status=none >&2
 
     secret=$(fde_make_tempfile secret)
     sealed_secret=$(fde_make_tempfile sealed_secret)
     recovered=$(fde_make_tempfile recovered)
     result=1
 
-    dd if=/dev/zero of=$secret bs=$key_size count=1 status=none >&2
+    dd if=/dev/zero of="$secret" bs="$key_size" count=1 status=none >&2
 
     fde_trace "Testing TPM seal/unseal"
     pcr-oracle \
@@ -235,8 +235,8 @@ function tpm_seal_secret {
     if [ -n "$authorized_policy" ]; then
 	pcr-oracle ${extra_opts} \
 			--authorized-policy "$authorized_policy" \
-			--input $secret \
-			--output $sealed_secret \
+			--input "$secret" \
+			--output "$sealed_secret" \
 			seal-secret
 	return $?
     fi
@@ -246,8 +246,8 @@ function tpm_seal_secret {
     # This may not work with systemd-boot. If systemd-boot requires
     # public/private in separate files, we should probably add
     # a subcommand "split-secret" to pcr-oracle.
-    if ! tpm_seal_key $secret $sealed_secret >&2; then
-	rm -f $sealed_secret
+    if ! tpm_seal_key "$secret" "$sealed_secret" >&2; then
+	rm -f "$sealed_secret"
 	# FIXME: this should be an error dialog.
 	# Let's hope the user has set a recovery password
 	echo "Failed to seal LUKS encryption key" >&2
@@ -292,9 +292,9 @@ function tpm_create_authorized_policy {
 
     pcr-oracle $extra_opts \
         --private-key "$secret_key" \
-        --authorized-policy $output_policy \
-	--algorithm $FDE_SEAL_PCR_BANK \
-        create-authorized-policy $FDE_SEAL_PCR_LIST
+        --authorized-policy "$output_policy" \
+	--algorithm "$FDE_SEAL_PCR_BANK" \
+        create-authorized-policy "$FDE_SEAL_PCR_LIST"
     if [ $? -ne 0 ]; then
 	return 1
     fi
