@@ -59,7 +59,7 @@ function init_authorized_policy {
     # boot loaders do need a full PEM/ASN.1/bignum library just for
     # loading the pubkey.
     tpm_set_authorized_policy_paths "$policy_name"
-    tpm_create_authorized_policy $FDE_AP_SECRET_KEY $FDE_AP_AUTHPOLICY $FDE_AP_PUBLIC_KEY
+    tpm_create_authorized_policy "$FDE_AP_SECRET_KEY" "$FDE_AP_AUTHPOLICY" "$FDE_AP_PUBLIC_KEY"
     if [ $? -ne 0 ]; then
 	display_errorbox "Failed to create authorized policy"
 	return 1
