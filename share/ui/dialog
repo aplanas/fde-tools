@@ -19,7 +19,7 @@
 
 function d_stolen_from_jeos {
 
-	dialog_out=`mktemp -qt 'firstboot-XXXXXX'`
+	dialog_out=$(mktemp -qt 'firstboot-XXXXXX')
 
 	retval=
 	while true
