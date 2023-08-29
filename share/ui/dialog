@@ -117,7 +117,7 @@ function request_new_password {
 
     attempt=0
     while [ $attempt -lt 3 ]; do
-	let attempt+=1
+	(( attempt++ )) || true
 
 	if ! d --no-cancel --insecure --passwordbox "${prompt}" 8 50; then
 	    continue
