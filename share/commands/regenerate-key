@@ -17,8 +17,8 @@
 #
 #   Written by Gary Lin <glin@suse.com>
 
-. $SHAREDIR/commands/add-secondary-key
-. $SHAREDIR/commands/tpm-enable
+. "$SHAREDIR"/commands/add-secondary-key
+. "$SHAREDIR"/commands/tpm-enable
 
 alias cmd_requires_luks_device=true
 alias cmd_perform=cmd_regenerate_key
@@ -29,7 +29,7 @@ function cmd_regenerate_key {
 
     # Get the current keyslots for the TPM sealed key
     for luks_dev in ${luks_devices}; do
-        KEYSLOTS_OLD["${luks_dev}"]=$(bootloader_get_keyslots ${luks_dev})
+        KEYSLOTS_OLD["${luks_dev}"]="$(bootloader_get_keyslots "${luks_dev}")"
     done
 
     if ! enroll_tpm_secondary_key "${luks_devices}"; then
