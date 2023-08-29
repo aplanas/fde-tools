@@ -83,7 +83,7 @@ function request_new_password {
     attempt=0
 
     while [ $attempt -lt 3 ]; do
-	let attempt+=1
+	(( attempt++ )) || true
 
 	__read_pass password1 "$prompt"
 	__read_pass password2 "Please retype password"
