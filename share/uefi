@@ -19,7 +19,7 @@
 
 # Initialize FDE_UEFI_BOOTDIR but do not overwrite it when someone
 # sources this file a second time.
-: ${FDE_UEFI_BOOTDIR:=""}
+: "${FDE_UEFI_BOOTDIR:=""}"
 
 ##################################################################
 # Check if UEFI Secure Boot is enabled
@@ -64,7 +64,7 @@ function uefi_get_current_loader {
     if [ -z "$file" -a -d "/boot/efi/EFI" ]; then
 	set -- /boot/efi/EFI/*/grub.cfg
 	if [ $# -eq 1 -a -f "$1" ]; then
-		realpath $1
+		realpath "$1"
 		return 0
 	fi
     fi
