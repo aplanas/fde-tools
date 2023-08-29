@@ -37,10 +37,10 @@ function __read_pass {
 
     varname=$1; shift
 
-    declare -g $varname
+    declare -g "$varname"
 
     echo -n "$1: "
-    read -s $varname
+    read -s "${varname?}"
     echo
 }
 
