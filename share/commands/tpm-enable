@@ -40,12 +40,12 @@ function tpm_enable {
 	    return 1
 	fi
 
-	# Tell the boot loader about the authorized policy and the misc files
-	# that go with it...
+	# Tell the security manager about the authorized policy and
+	# the misc files that go with it...
 	if tpm_enable_authorized_policy "$luks_devices"; then
 	    # ... and authorize the current system configuration.
 	    # This is what "fdectl tpm-authorize" does, inlined.
-	    bootloader_authorize_pcr_policy "$FDE_AP_SECRET_KEY" "$FDE_AP_SEALED_SECRET"
+	    security_authorize_pcr_policy "$FDE_AP_SECRET_KEY" "$FDE_AP_SEALED_SECRET"
 	    st=$?
 	fi
     elif [ -n "$opt_keyfile" ]; then
@@ -68,14 +68,14 @@ function tpm_enable {
 	#
 	# However, if there was a firstboot password, fall thru to remove the password.
 	# After all, it's supposed to be good for one reboot only.
-	if [ "$(bootloader_get_fde_password)" = "" ]; then
+	if [ "$(security_get_fde_password)" = "" ]; then
 	    return 0
 	fi
 	st=0
     fi
 
-    if ! bootloader_commit_config; then
-	display_errorbox "Failed to update bootloader configuration"
+    if ! security_commit_config; then
+	display_errorbox "Failed to update the security manager configuration"
 	return 1
     fi
 
@@ -105,10 +105,10 @@ function tpm_enable_authorized_policy {
     fi
 
     # Copy authorized policy and other constant files to the ESP, and
-    # tell the boot loader to use these.
+    # tell the security manager to use these.
     # Eventually, we will bless a specfic configuration by creating a PCR policy
     # and signing it with our RSA key.
-    bootloader_enable_fde_authorized_policy "$FDE_AP_SEALED_SECRET" \
+    security_enable_fde_authorized_policy "$FDE_AP_SEALED_SECRET" \
 		    "$FDE_AP_AUTHPOLICY" "$FDE_AP_PUBLIC_KEY"
     return $?
 }
@@ -168,7 +168,7 @@ function tpm_enable_pcr_policy {
 	rm -f "$luks_keyfile"
     fi
 
-    if ! bootloader_enable_fde_pcr_policy "${luks_new_keyfile}"; then
+    if ! security_enable_fde_pcr_policy "${luks_new_keyfile}"; then
 	display_errorbox "Failed to protect encrypted volume with TPM"
 	return 1
     fi

@@ -24,30 +24,30 @@
 # Right now, all of these functions are merely stubs that need
 # to be implemented.
 ##################################################################
-alias bootloader_enable_fde_without_tpm=systemd_enable_fde_without_tpm
-alias bootloader_enable_fde_pcr_policy=systemd_enable_fde_pcr_policy
-alias bootloader_enable_fde_authorized_policy=systemd_enable_fde_authorized_policy
-alias bootloader_check_sealed_key=systemd_check_sealed_key
-alias bootloader_remove_sealed_key=systemd_remove_sealed_key
-alias bootloader_authorize_pcr_policy=systemd_authorize_pcr_policy
-alias bootloader_set_fde_password=systemd_set_fde_password
-alias bootloader_get_fde_password=systemd_get_fde_password
-alias bootloader_commit_config=systemd_commit_config
-alias bootloader_get_keyslots=systemd_get_keyslots
-alias bootloader_remove_keyslots=systemd_remove_keyslots
-alias bootloader_wipe=systemd_wipe
-alias bootloader_rsa_sizes=systemd_rsa_sizes
-alias bootloader_stop_event=systemd_stop_event
-alias bootloader_platform_parameters=systemd_platform_parameters
+alias security_enable_fde_without_tpm=systemd_enable_fde_without_tpm
+alias security_enable_fde_pcr_policy=systemd_enable_fde_pcr_policy
+alias security_enable_fde_authorized_policy=systemd_enable_fde_authorized_policy
+alias security_check_sealed_key=systemd_check_sealed_key
+alias security_remove_sealed_key=systemd_remove_sealed_key
+alias security_authorize_pcr_policy=systemd_authorize_pcr_policy
+alias security_set_fde_password=systemd_set_fde_password
+alias security_get_fde_password=systemd_get_fde_password
+alias security_commit_config=systemd_commit_config
+alias security_get_keyslots=systemd_get_keyslots
+alias security_remove_keyslots=systemd_remove_keyslots
+alias security_wipe=systemd_wipe
+alias security_rsa_sizes=systemd_rsa_sizes
+alias security_stop_event=systemd_stop_event
+alias security_platform_parameters=systemd_platform_parameters
 
 function not_implemented {
 
-    display_errorbox "systemd-boot support not yet implemented"
+    display_errorbox "systemd support not yet implemented"
 }
 
 ##################################################################
-# Configure the boot loader to use a clear-text password to unlock
-# the LUKS partition.
+# Configure the security manager to use a clear-text password to
+# unlock the LUKS partition.
 # This is useful in several scenarios:
 #  - when shipping KVM images with encrypted system partition,
 #    we need to be able to unlock the partition with a well-known
@@ -73,12 +73,12 @@ function systemd_get_fde_password {
 }
 
 ##################################################################
-# This function implements the boot loader specific part of
+# This function implements the security manager specific part of
 # tpm-enable when using an authorized policy.
 # It is expected to install the sealed authorized policy itself,
 # the RSA public key and the sealed LUKS key in a location where
-# the boot loader can find it, and configure the boot loader
-# to use them.
+# the security manager can find it, and configure the security
+# manager to use them.
 ##################################################################
 function systemd_enable_fde_authorized_policy {
 
@@ -90,7 +90,7 @@ function systemd_enable_fde_authorized_policy {
 }
 
 ##################################################################
-# This function implements the boot loader specific part of
+# This function implements the security manager specific part of
 # tpm-authorize when using an authorized policy.
 # It calls tpm_authorize with the appropriate path where to
 # store the signed PCR policy.
@@ -104,7 +104,7 @@ function systemd_authorize_pcr_policy {
 }
 
 ##################################################################
-# This function implements the boot loader specific part of
+# This function implements the security manager specific part of
 # tpm-enable when using a regular PCR policy.
 # It needs to choose a proper path for storing the the sealed
 # LUKS key, and call tpm_seal_secret to seal the LUKS key against
@@ -118,7 +118,7 @@ function systemd_enable_fde_pcr_policy {
 }
 
 ##################################################################
-# This function implements the boot loader specific part of
+# This function implements the security manager specific part of
 # tpm-disable.
 ##################################################################
 function systemd_enable_fde_without_tpm {
@@ -143,8 +143,8 @@ function systemd_remove_sealed_key {
 }
 
 ##################################################################
-# This function implements the boot loader specific part to commit
-# changes to systemd-boot configuration.
+# This function implements the security manager specific part to
+# commit changes to systemd configuration.
 ##################################################################
 function systemd_commit_config {
 
@@ -152,8 +152,8 @@ function systemd_commit_config {
 }
 
 ##################################################################
-# This function implements the boot loader specific part to get
-# the keyslot IDs used by systemd-boot..
+# This function implements the security manager specific part to
+# get the keyslot IDs used by systemd..
 ##################################################################
 function systemd_get_keyslots {
 
@@ -161,8 +161,8 @@ function systemd_get_keyslots {
 }
 
 ##################################################################
-# This function implements the boot loader specific part to remove
-# the keyslots used by systemd-boot..
+# This function implements the security manager specific part to
+# remove the keyslots used by systemd..
 ##################################################################
 function systemd_remove_keyslots {
 
@@ -170,7 +170,7 @@ function systemd_remove_keyslots {
 }
 
 ##################################################################
-# This function implements the boot loader specific part of
+# This function implements the security manager specific part of
 # tpm-wipe.
 ##################################################################
 function systemd_wipe {

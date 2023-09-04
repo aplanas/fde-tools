@@ -243,9 +243,9 @@ function tpm_seal_secret {
 
     # The sealed key that grub expects is just the concatenation of
     # TPM2B_PUBLIC and a TPM2B containing the private key portion
-    # This may not work with systemd-boot. If systemd-boot requires
-    # public/private in separate files, we should probably add
-    # a subcommand "split-secret" to pcr-oracle.
+    # This may not work with systemd. If systemd requires
+    # public/private in separate files, we should probably add a
+    # subcommand "split-secret" to pcr-oracle.
     if ! tpm_seal_key "$secret" "$sealed_secret" >&2; then
 	rm -f "$sealed_secret"
 	# FIXME: this should be an error dialog.

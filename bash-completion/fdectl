@@ -15,8 +15,8 @@ _fdectl() {
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     case "${prev}" in
-    --bootloader)
-        COMPREPLY=( $(compgen -W "grub2 systemd-boot" -- ${cur}) )
+    --security)
+        COMPREPLY=( $(compgen -W "grub2 systemd" -- ${cur}) )
         return 0
         ;;
     --keyfile)

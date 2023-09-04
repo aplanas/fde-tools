@@ -43,10 +43,10 @@ command:
 
 	# fdectl add-secondary-password
 
-This will ask for the recovery password, and create an additional
-slot in the LUKS header that is protected by an additional, randomly
-generated password, and will configure the bootloader to use that
-to unlock the system partition on next boot.
+This will ask for the recovery password, and create an additional slot
+in the LUKS header that is protected by an additional, randomly
+generated password, and will configure the security manager to use
+that to unlock the system partition on next boot.
 
 If you do not want to be prompted for the recovery password, you can
 also use either the ``--passfile`` or the ``--password`` option to
@@ -132,7 +132,7 @@ authorized policy:
 
 	# fdectl tpm-enable
 
-As before, ``tpm-enable`` will configure the boot loader to
+As before, ``tpm-enable`` will configure the security manager to
 unlock the LUKS partition by unsealing the secret key.
 Implicitly, there is a second step involved, which is to actually
 _authorize_ the current system configuration. This will predict a
@@ -147,15 +147,15 @@ to (re)generate and seal the LUKS key with ``regenerate-key``:
     # fdectl regenerate-key
 
 This command generates a new random secret key, seals the key with TPM,
-and updates the bootloader configuration.
+and updates the security manager configuration.
 
 To disable the TPM unsealing temporarily, ``tpm-disable`` will remove
-the path to the sealed key from the boot loader configuration.
+the path to the sealed key from the security manager configuration.
 
     # fdectl tpm-disable
 
 To restore the TPM unsealing functionality, ``tpm-enable`` will update
-the sealed key if necessary and then configure the boot loader to
+the sealed key if necessary and then configure the security manager to
 unlock the LUKS partition with the sealed key.
 
     # fdectl tpm-enable

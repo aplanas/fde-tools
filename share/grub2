@@ -21,21 +21,21 @@
 # Define aliases for the grub_* functions we export to other
 # parts of fdectl
 ##################################################################
-alias bootloader_enable_fde_without_tpm=grub_enable_fde_without_tpm
-alias bootloader_enable_fde_pcr_policy=grub_enable_fde_pcr_policy
-alias bootloader_enable_fde_authorized_policy=grub_enable_fde_authorized_policy
-alias bootloader_check_sealed_key=grub_check_sealed_key
-alias bootloader_remove_sealed_key=grub_remove_sealed_key
-alias bootloader_authorize_pcr_policy=grub_authorize_pcr_policy
-alias bootloader_set_fde_password=grub_set_fde_password
-alias bootloader_get_fde_password=grub_get_fde_password
-alias bootloader_commit_config=grub_commit_config
-alias bootloader_get_keyslots=grub_get_keyslots
-alias bootloader_remove_keyslots=grub_remove_keyslots
-alias bootloader_wipe=grub_wipe
-alias bootloader_rsa_sizes=grub_rsa_sizes
-alias bootloader_stop_event=grub_stop_event
-alias bootloader_platform_parameters=grub_platform_parameters
+alias security_enable_fde_without_tpm=grub_enable_fde_without_tpm
+alias security_enable_fde_pcr_policy=grub_enable_fde_pcr_policy
+alias security_enable_fde_authorized_policy=grub_enable_fde_authorized_policy
+alias security_check_sealed_key=grub_check_sealed_key
+alias security_remove_sealed_key=grub_remove_sealed_key
+alias security_authorize_pcr_policy=grub_authorize_pcr_policy
+alias security_set_fde_password=grub_set_fde_password
+alias security_get_fde_password=grub_get_fde_password
+alias security_commit_config=grub_commit_config
+alias security_get_keyslots=grub_get_keyslots
+alias security_remove_keyslots=grub_remove_keyslots
+alias security_wipe=grub_wipe
+alias security_rsa_sizes=grub_rsa_sizes
+alias security_stop_event=grub_stop_event
+alias security_platform_parameters=grub_platform_parameters
 
 ##################################################################
 # Edit a variable in /etc/default/grub
@@ -46,8 +46,8 @@ function grub_set_control {
 }
 
 ##################################################################
-# Configure the boot loader to use a clear-text password to unlock
-# the LUKS partition.
+# Configure the security manager to use a clear-text password to
+# unlock the LUKS partition.
 # This is useful in several scenarios:
 #  - when shipping KVM images with encrypted system partition,
 #    we need to be able to unlock the partition with a well-known

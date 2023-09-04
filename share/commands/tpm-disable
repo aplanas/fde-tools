@@ -42,10 +42,10 @@ function tpm_disable {
 
     rm -f "$luks_keyfile"
 
-    # Update the bootloader settings without TPM
-    bootloader_enable_fde_without_tpm
+    # Update the security manager settings without TPM
+    security_enable_fde_without_tpm
 
-    bootloader_remove_sealed_key
+    security_remove_sealed_key
 
     return $?
 }

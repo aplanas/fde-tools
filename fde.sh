@@ -25,7 +25,7 @@ shopt -s expand_aliases
 
 version=__VERSION__
 
-opt_bootloader=grub2
+opt_security=grub2
 opt_uefi_bootdir=""
 opt_ui=shell
 opt_keyfile=""
@@ -52,8 +52,8 @@ Global options:
 	Specify the partition to operate on. Can be a device
 	name or a mount point. Defaults to the current root
 	device.
-  --bootloader
-	Specify the boot loader being used [grub2].
+  --security
+	Specify the security manager being used [grub2].
   --uefi-boot-dir
 	Specify the location of the UEFI ESP [/boot/efi].
   --use-dialog
@@ -126,7 +126,7 @@ function fde_maybe_chroot {
 
 fde_maybe_chroot "$@"
 
-long_options="help,version,bootloader:,device:,use-dialog,keyfile:,uefi-boot-dir:,password:,passfile:"
+long_options="help,version,security:,device:,use-dialog,keyfile:,uefi-boot-dir:,password:,passfile:"
 
 if ! getopt -Q -n fdectl -l "$long_options" -o h -- "$@"; then
     fde_usage
@@ -149,8 +149,8 @@ while [ $# -gt 0 ]; do
     --version)
 	echo "$version"
 	exit 0;;
-    --bootloader)
-    	opt_bootloader=$1; shift;;
+    --security)
+	opt_security=$1; shift;;
     --device)
 	# We should have handled --device in fde_maybe_chroot above
 	fde_bad_option "The --device option should never show up at this point"
@@ -184,8 +184,8 @@ if [ ! -e "$SHAREDIR/commands/$command" ]; then
 fi
 
 
-if [ "$opt_bootloader" != "grub2" ] && [ "$opt_bootloader" != "systemd-boot" ]; then
-    fde_bad_argument "Unsupported boot loader \"$opt_bootloader\""
+if [ "$opt_security" != "grub2" ] && [ "$opt_security" != "systemd" ]; then
+    fde_bad_argument "Unsupported security manager \"$opt_security\""
 fi
 
 trap fde_clean_tempdir EXIT SIGHUP SIGINT SIGSEGV SIGTERM
@@ -203,7 +203,7 @@ FDE_LOG_DIR=/var/log/fde
 . "$SHAREDIR/ui/$opt_ui"
 . "$SHAREDIR/util"
 . "$SHAREDIR/tpm"
-. "$SHAREDIR/$opt_bootloader"
+. "$SHAREDIR/$opt_security"
 . "$SHAREDIR/commands/$command"
 
 if cmd_requires_luks_device; then
