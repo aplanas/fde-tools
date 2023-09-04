@@ -68,7 +68,7 @@ function fde_request_recovery_passfile {
 
 function fde_set_variable {
 
-    sysconfig_set_variable /etc/sysconfig/fde-tools "$@"
+    sysconfig_set_variable "$SYSCONFIGDIR"/fde-tools "$@"
 }
 
 ##################################################################

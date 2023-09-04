@@ -21,6 +21,7 @@
 shopt -s expand_aliases
 
 : "${SHAREDIR:=/usr/share/fde}"
+: "${SYSCONFIGDIR:=/etc/sysconfig}"
 
 version=__VERSION__
 
@@ -198,7 +199,7 @@ fi
 FDE_CONFIG_DIR=/etc/fde
 FDE_LOG_DIR=/var/log/fde
 
-. /etc/sysconfig/fde-tools
+. "$SYSCONFIGDIR/fde-tools"
 . "$SHAREDIR/ui/$opt_ui"
 . "$SHAREDIR/util"
 . "$SHAREDIR/tpm"
