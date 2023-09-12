@@ -183,17 +183,21 @@ if [ ! -e "$SHAREDIR/commands/$command" ]; then
     fde_bad_option "Unsupported command \"$command\""
 fi
 
-
-if [ "$opt_security" != "grub2" ] && [ "$opt_security" != "systemd" ]; then
-    fde_bad_argument "Unsupported security manager \"$opt_security\""
-fi
-
 trap fde_clean_tempdir EXIT SIGHUP SIGINT SIGSEGV SIGTERM
 
 . "$SHAREDIR/luks"
 . "$SHAREDIR/uefi"
 if [ -n "$opt_uefi_bootdir" ]; then
     uefi_set_loader "$opt_uefi_bootdir"
+fi
+
+if [ "$opt_security" != "grub2" ] && [ "$opt_security" != "systemd" ]; then
+    fde_bad_argument "Unsupported security manager \"$opt_security\""
+fi
+
+bootloader=$(uefi_get_bootloader)
+if [ "$opt_security" == "grub2" ] && [ "$bootloader" != "grub2" ]; then
+    fde_bad_argument "Unsupported security manager \"$opt_security\" for the current bootloader ($bootloader)"
 fi
 
 FDE_CONFIG_DIR=/etc/fde
