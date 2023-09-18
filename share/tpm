@@ -183,9 +183,6 @@ function tpm_test {
     key_size=$1
 
     secret=$(fde_make_tempfile secret)
-    dd if=/dev/zero of="$secret" bs="$key_size" count=1 status=none >&2
-
-    secret=$(fde_make_tempfile secret)
     sealed_secret=$(fde_make_tempfile sealed_secret)
     recovered=$(fde_make_tempfile recovered)
     result=1
