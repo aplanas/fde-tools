@@ -183,8 +183,6 @@ if [ ! -e "$SHAREDIR/commands/$command" ]; then
     fde_bad_option "Unsupported command \"$command\""
 fi
 
-trap fde_clean_tempdir EXIT SIGHUP SIGINT SIGSEGV SIGTERM
-
 . "$SHAREDIR/luks"
 . "$SHAREDIR/uefi"
 if [ -n "$opt_uefi_bootdir" ]; then
@@ -209,6 +207,9 @@ FDE_LOG_DIR=/var/log/fde
 . "$SHAREDIR/tpm"
 . "$SHAREDIR/$opt_security"
 . "$SHAREDIR/commands/$command"
+
+# fde_clean_tempdir is defined in `util`
+trap fde_clean_tempdir EXIT SIGHUP SIGINT SIGSEGV SIGTERM
 
 if cmd_requires_luks_device; then
     if [ -n "${FDE_DEVS}" ]; then
